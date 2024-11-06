@@ -84,3 +84,33 @@ CREATE TABLE curriculum.offerings (
 	FOREIGN KEY (location_id) REFERENCES courses.locations (location_id) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (course_id) REFERENCES curriculum.subjects (course_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+-- define a select statement to get all students enrolled in a course
+CREATE VIEW courses.vw_students_enrolled AS
+SELECT
+	courses.students.student_id,
+	courses.students.first_name,
+	courses.students.last_name,
+	courses.students.email,
+	courses.students.phone,
+	courses.locations.location_name,
+	courses.locations.city,
+	courses.locations.state,
+	courses.locations.zip_code,
+	courses.registrations.registration_date,
+	courses.registrations.registration_status,
+	courses.registrations.required_date,
+	courses.registrations.completion_date
+
+FROM
+	courses.students
+JOIN
+	courses.registrations
+ON
+	courses.students.student_id = courses.registrations.student_id
+JOIN
+	courses.locations
+ON
+	courses.registrations.location_id = courses.locations.location_id
+WHERE
+	courses.registrations.registration_status = 2;
